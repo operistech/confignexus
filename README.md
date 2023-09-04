@@ -7,8 +7,8 @@
 - [Configuration](#configuration)
 - [Running](#running)
 - [Usage](#usage)
+- [Example](#example)
 - [Testing](#testing)
-- [Contributing](#contributing)
 - [License](#license)
 
 ---
@@ -95,10 +95,76 @@ The project relies on various YAML configuration files to operate. These files a
 
 When the application is initialized or reconfigured, it merges settings in this order to derive the final settings. This way, specific configurations can be applied granularly, allowing for flexible system behavior.
 
+#### domains_regex.yaml
+
+Hold any number of domain regex patterns that can match domains and named groups that can subsequently be used in template files.
+The file contains a single key: `regex_patterns`, which is an array of objects. Each object has the following attributes:
+
+- `name`: A unique identifier for the regular expression pattern.
+- `regex`: The actual regular expression pattern.
+
+
+```yaml
+regex_patterns:
+  - name: "Pattern1"
+    regex: "^(?P<Datacenter>[a-z]{3})(?P<Function>[a-z]+)(?P<Instance>\\d+)\\.mgt\\.prod\\.example\\.com$"
+  - name: "Pattern2"
+    regex: "^(?P<Function>[a-z]+)(?P<Instance>\\d+)\\.(?P<Datacenter>[a-z]{3})\\.example\\.com$"
+```
+
+### Utilization in Templates
+Parameterizing Named Groups
+
+Named groups captured from these regular expressions can be parameterized and used in the ConfigNexus templates. For example, if a domain name matches Pattern1, you can use the captured Datacenter, Function, or Instance in a template like this:
+
+```yaml
+
+datacenter: {{ .Datacenter }}
+function: {{ .Function }}
+instance: {{ .Instance }}
+```
+By using these named groups in your templates, you can create highly dynamic configurations that adapt based on the domain name being processed.
+
 #### Automatic Repo Monitoring
 
 The application is configured to automatically monitor the associated repository for any changes. It will perform a `git pull` every 20 minutes to ensure that the latest configuration and code are always in sync with the deployed instance. This feature enables seamless updates without requiring manual intervention.
 
+
+## Example
+configNexus has an associated testConfigdata repository that when ran with confignexus will allow for some test domains to be fed through to generate a full json return of configuration data.
+
+    CN_REPOADDRESS=https://github.com/operistech/testconfigdata.git go run cmd/server/main.go
+
+Then server can be queried like:
+
+    curl -k https://localhost:9443/details/slcpostgresql1.mgt.prod.example.com | python -m json.tool
+
+which will return the following json:
+
+    {
+        "appserver": "appserver1.slc.example.com",
+        "contact": {
+            "phone_number": "555-555-1234",
+            "security": "datacentersecurity@example.com",
+            "support": "datacentersupport@example.com"
+        },
+        "datacenter": "slc",
+        "environment": "staging",
+        "features": {
+            "firewall": true,
+            "vpn": false
+        },
+        "function": "postgresql",
+        "instance": 1,
+        "ip_address": "192.168.0.7",
+        "ip_range": "192.168.0.0/24",
+        "ldap": "slcldap1.mgt.prod.example.com",
+        "owner": "superappteam",
+        "ports": [
+            8102,
+            8103
+        ]
+    }
 
 
 ## Testing
