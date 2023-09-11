@@ -44,7 +44,7 @@ By integrating ConfigNexus into your workflow, you empower your team to maintain
 Clone the repository and build the application:
 
 
-    git clone https://github.com/your-username/configNexus.git
+    git clone https://github.com/operistech/configNexus.git
     cd configNexus
     go build -o configNexus
 
