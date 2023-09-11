@@ -46,6 +46,7 @@ Clone the repository and build the application:
 
     git clone https://github.com/operistech/configNexus.git
     cd configNexus
+    go mod download
     go build -o configNexus
 
 
