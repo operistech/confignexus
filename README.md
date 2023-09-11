@@ -77,6 +77,24 @@ Run the application using:
 
     ./configNexus
 
+### Running the configNexus Docker Container
+
+To run the `configNexus` Docker container, you can use the following command which will run the container in the background and map port 9443 in the container to port 9443 on your host system:
+
+```sh
+docker run -d -p 9443:9443 operistech/confignexus
+```
+
+
+To run the container with environment variables, allowing you to configure the container at runtime, use a command like this:
+
+```sh
+docker run -d -p 9443:9443 -e "ENV_VAR_NAME=env_var_value" operistech/confignexus
+```
+
+
+### Notes
+- Replace `ENV_VAR_NAME` and `env_var_value` with the actual name and value of the environment variable you want to set.
 
 ## Usage
 
@@ -186,4 +204,4 @@ Run unit tests:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.md) file for details.
