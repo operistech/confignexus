@@ -16,6 +16,7 @@ along with configNexus.  If not, see <https://www.gnu.org/licenses/>.
 
 Copyright (C) 2023 Operistech Inc.
 */
+
 package utils
 
 import (
